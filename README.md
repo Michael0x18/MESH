@@ -1,2 +1,1 @@
-# MESH
-The Mathematical Evaluation SHell
+MESH: The Mathematical Evaluation SHell
