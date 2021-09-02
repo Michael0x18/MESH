@@ -1,7 +1,13 @@
 /*
  * main.c
  *
- * MESH
+ * MESH Main File
+ * main.c contains the GUI elements needed for the MESH frontend.
+ * Yes, there are globals. Please don't kill me, Mateo.
+ *
+ * The real mathematical parsing occurs within the other files, and is linked
+ * here solely by the "eval" function, which takes in an input string, and returns
+ * the result.
  *
  * Michael0x18
  */
@@ -94,15 +100,50 @@ const char *key_strings[56][4] = {
  */
 char buffer[1024];
 int ind;
+int offset;
+int cur;
+
+void equalize(){
+	if(offset<0)offset=0;
+	while(cur<0){
+		cur++;
+		offset--;
+	}
+	while(cur>40){
+		cur--;
+		offset++;
+	}
+	if(strlen(buffer) > 40 && strlen(buffer)-offset<40){
+		offset=strlen(buffer)-40;
+		cur=40;
+	}
+}
 
 void addchar(char c){
+	int i = strlen(buffer);
+	if(i>=1024)return;
+	while(i!=ind){
+		buffer[i]=buffer[i-1];
+		i--;
+	}
 	if(ind<1024){
 		buffer[ind++]=c;
 	}
+	cur++;
+	equalize();
 }
 void bs(void){
-	buffer[ind]=0;
+	if(ind==0)return;
+	buffer[ind-1]='\0';
 	ind--;
+	int i = ind+1;
+	do{
+		buffer[i-1]=buffer[i];
+		i++;
+	}while(buffer[i]);
+	buffer[i-1]='\0';
+	cur--;
+	equalize();
 }
 
 void addstr(char* s){
@@ -124,10 +165,20 @@ void addstr(char* s){
 void draw_shell() {
 	gfx_SetColor(255);
 	gfx_FillRectangle(0,210,320,15);
-	fontlib_SetCursorPosition(0,210-15*((signed int)strlen(buffer)%40));
-	fontlib_DrawString(buffer);
+	//fontlib_SetCursorPosition(0,210-14*(((signed int)strlen(buffer))/40));//Ditching wrapping
+	fontlib_SetCursorPosition(0,210);
+	gfx_SetColor(0);
+	//if(ind<40){
+	//	fontlib_DrawString(buffer);
+	//	gfx_VertLine(8*ind,210,14);
+	//}else{
+	//	fontlib_DrawString(buffer+strlen(buffer)-40);
+	//	gfx_VertLine(319,210,14);
+	//}gfx_SetColor(0);
 	
-	
+	fontlib_DrawString(buffer+offset);
+	gfx_VertLine(8*cur,210,14);
+
 	gfx_SetColor(43);
 	gfx_SetTextFGColor(255);
 	gfx_SetTextBGColor(1);
@@ -171,17 +222,43 @@ void mesh_mainloop() {
 				mode = mode == 2 ? 3 : mode == 3 ? 0 : 2;
 				break;
 			case 1://down arrow TODO
+				ind=strlen(buffer);
+				if(ind<39){
+					cur=ind;
+					offset=0;
+				}else{
+					cur=40;
+					offset=strlen(buffer)-40;
+				}
+				equalize();
 				break;
 			case 2://left arrow TODO
+				if(ind){
+					cur--;
+					ind--;
+				}
+				equalize();
 				break;
 			case 3://right arrow TODO
+				if(ind<strlen(buffer)){
+					cur++;
+					ind++;
+				}
+				equalize();
 				break;
 			case 4://up arrow TODO
+				ind=0;
+				cur=0;
+				offset=0;
+				equalize();
 				break;
 				//5-8 unused
 			case 9://TODO ENTER -> SUBMIT
 				break;
 			case 10:
+				break;
+			case 56://Trap delete
+				bs();
 				break;
 			default:
 				addstr(key_strings[k-1][mode]);
@@ -190,17 +267,7 @@ void mesh_mainloop() {
 	}
 }
 
-/*
- * Takes in a null terminated string and returns the result, in null terminated string form.
- * Currently just copies it.
- * TODO Fix this to actually eval stuff.
- */
-char* eval(char* s1){
-	char* s2 = malloc(strlen(s1)*sizeof(char));
-	strcpy(s1,s2);
 
-	return s2;
-}
 
 int main(void) {
 	font_small = fontlib_GetFontByIndex("DrMono", 3);

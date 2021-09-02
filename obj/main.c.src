@@ -1,24 +1,160 @@
 	section	.text,"ax",@progbits
 	assume	adl = 1
 	section	.text,"ax",@progbits
-	public	_addchar
-_addchar:
-	call	__frameset0
-	ld	de, (_ind)
-	ld	bc, 1024
+	public	_equalize
+_equalize:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, 0
+	ld	bc, (_offset)
+	ld	de, 0
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	jq	p, BB0_2
+	ld	(_offset), iy
+	lea	bc, iy + 0
+BB0_2:
+	ld	(ix + -3), bc
+	ld	bc, (_cur)
+	ld	de, 1
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	push	bc
+	pop	de
+	jq	p, BB0_4
+	lea	de, iy + 0
+BB0_4:
+	ld	iy, _buffer
+BB0_5:
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB0_6
+	inc	bc
+	ld	(_cur), bc
+	ld	hl, (ix + -3)
+	push	hl
+	pop	iy
+	dec	iy
+	dec	hl
+	ld	(_offset), hl
+	ld	(ix + -3), iy
+	ld	iy, _buffer
+	jq	BB0_5
+BB0_6:
+	ld	bc, 41
+BB0_8:
 	push	de
 	pop	hl
 	or	a, a
 	sbc	hl, bc
 	call	__setflag
-	jq	p, BB0_2
+	jq	m, BB0_10
+	push	de
+	pop	hl
+	dec	hl
+	dec	de
+	ld	(_cur), de
+	ld	bc, (ix + -3)
+	push	bc
+	pop	de
+	inc	de
+	inc	bc
+	ld	(_offset), bc
+	ld	(ix + -3), de
+	ex	de, hl
+	ld	bc, 41
+	jq	BB0_8
+BB0_10:
+	push	iy
+	call	_strlen
+	push	hl
+	pop	iy
+	pop	hl
+	lea	hl, iy + 0
+	ld	de, (ix + -3)
+	or	a, a
+	sbc	hl, de
+	push	hl
+	pop	de
+	lea	hl, iy + 0
+	ld	bc, 41
+	or	a, a
+	sbc	hl, bc
+	jq	c, BB0_13
+	ld	bc, 40
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	jq	nc, BB0_13
+	ld	de, -40
+	add	iy, de
+	ld	(_offset), iy
+	ld	hl, 40
+	ld	(_cur), hl
+BB0_13:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_addchar
+_addchar:
+	call	__frameset0
+	ld	hl, _buffer
+	push	hl
+	call	_strlen
+	push	hl
+	pop	bc
+	pop	hl
+	ld	de, 1024
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	jq	p, BB1_7
 	ld	a, (ix + 6)
+	ld	de, (_ind)
+BB1_2:
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB1_4
+	ld	iy, _buffer
+	add	iy, bc
+	dec	bc
+	ld	l, (iy + -1)
+	ld	(iy), l
+	jq	BB1_2
+BB1_4:
+	push	de
+	pop	hl
+	ld	bc, 1024
+	or	a, a
+	sbc	hl, bc
+	call	__setflag
+	jq	p, BB1_6
 	ld	hl, _buffer
 	add	hl, de
 	inc	de
 	ld	(_ind), de
 	ld	(hl), a
-BB0_2:
+BB1_6:
+	ld	hl, (_cur)
+	inc	hl
+	ld	(_cur), hl
+	call	_equalize
+BB1_7:
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
@@ -26,63 +162,74 @@ BB0_2:
 	section	.text,"ax",@progbits
 	public	_bs
 _bs:
-	ld	hl, _buffer
 	ld	de, (_ind)
-	add	hl, de
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB2_4
+	ld	iy, _buffer
+	push	de
+	pop	bc
+	dec	bc
+	lea	hl, iy + 0
+	add	hl, bc
 	ld	(hl), 0
-	dec	de
-	ld	(_ind), de
+	ld	(_ind), bc
+	add	iy, de
+	ld	e, (iy)
+BB2_2:
+	push	hl
+	pop	iy
+	ld	(iy), e
+	ld	e, (iy + 2)
+	inc	hl
+	ld	a, e
+	or	a, a
+	jq	nz, BB2_2
+	ld	(iy + 1), 0
+	ld	hl, (_cur)
+	dec	hl
+	ld	(_cur), hl
+	call	_equalize
+BB2_4:
 	ret
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
 	public	_addstr
 _addstr:
-	ld	hl, -6
+	ld	hl, -3
 	call	__frameset
-	ld	bc, (ix + 6)
 	or	a, a
 	sbc	hl, hl
 	ld	(ix + -3), hl
-BB2_1:
-	push	bc
+BB3_1:
+	ld	hl, (ix + 6)
+	push	hl
 	call	_strlen
 	push	hl
 	pop	de
 	pop	hl
-	ld	bc, (ix + -3)
-	push	bc
-	pop	hl
+	ld	hl, (ix + -3)
 	or	a, a
 	sbc	hl, de
-	jq	nc, BB2_2
-	ld	hl, (_ind)
-	ld	(ix + -6), hl
-	ld	de, 1024
-	or	a, a
-	sbc	hl, de
-	call	__setflag
-	push	bc
-	pop	iy
-	ld	bc, (ix + 6)
-	jq	p, BB2_5
-	push	bc
-	pop	hl
-	lea	de, iy + 0
+	jq	nc, BB3_2
+	ld	hl, (ix + 6)
+	ld	de, (ix + -3)
 	add	hl, de
 	ld	a, (hl)
-	ld	hl, _buffer
-	ld	de, (ix + -6)
-	add	hl, de
-	inc	de
-	ld	(_ind), de
-	ld	(hl), a
-BB2_5:
-	inc	iy
-	ld	(ix + -3), iy
-	jq	BB2_1
-BB2_2:
-	ld	sp, ix
+	ld	l, a
+	push	hl
+	call	_addchar
+	pop	hl
+	ld	hl, (ix + -3)
+	inc	hl
+	ld	(ix + -3), hl
+	jq	BB3_1
+BB3_2:
+	pop	hl
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
@@ -108,18 +255,7 @@ _draw_shell:
 	pop	hl
 	pop	hl
 	pop	hl
-	ld	hl, _buffer
-	push	hl
-	call	_strlen
-	pop	de
-	ld	bc, 40
-	call	__irems
-	ld	e, -15
-	ld	d, l
-	mlt	de
-	ld	a, e
-	add	a, -46
-	ld	l, a
+	ld	hl, -46
 	push	hl
 	or	a, a
 	sbc	hl, hl
@@ -127,9 +263,28 @@ _draw_shell:
 	call	_fontlib_SetCursorPosition
 	pop	hl
 	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	de, (_offset)
 	ld	hl, _buffer
+	add	hl, de
 	push	hl
 	call	_fontlib_DrawString
+	pop	hl
+	ld	hl, (_cur)
+	ld	c, 3
+	call	__ishl
+	ld	de, 14
+	push	de
+	ld	de, 210
+	push	de
+	push	hl
+	call	_gfx_VertLine
+	pop	hl
+	pop	hl
 	pop	hl
 	ld	hl, 43
 	push	hl
@@ -321,63 +476,91 @@ _mesh_mainloop:
 	push	hl
 	call	_gfx_SetDraw
 	pop	hl
-BB4_1:
+BB5_1:
 	call	_draw_shell
 	ld	hl, 1
 	push	hl
 	call	_gfx_Blit
 	pop	hl
-	ld.sis	hl, 0
-BB4_2:
-	ld	a, l
+	ld.sis	bc, 0
+BB5_2:
+	ld	a, c
 	or	a, a
-	jq	nz, BB4_4
+	jq	nz, BB5_4
 	call	_os_GetCSC
-	ld	l, a
-	ld	h, 0
-	jq	BB4_2
-BB4_4:
-	ld	a, l
+	ld	c, a
+	ld	b, 0
+	jq	BB5_2
+BB5_4:
+	ld	a, c
 	sub	a, 1
-	cp	a, 4
-	jq	c, BB4_1
-	ld	a, l
-	sub	a, 9
-	cp	a, 2
-	jq	c, BB4_1
-	ld	a, l
+	ld	de, 0
+	cp	a, 10
+	jq	c, BB5_6
+	ld	a, c
 	cp	a, 48
-	jq	nz, BB4_7
+	jq	nz, BB5_7
 	ld	a, (_mode)
 	cp	a, 3
 	ld	l, 0
-	jq	z, BB4_13
+	jq	z, BB5_14
 	ld	l, 2
-BB4_13:
+BB5_14:
 	cp	a, 2
 	ld	a, 3
-	jq	z, BB4_15
+	jq	z, BB5_16
 	ld	a, l
-BB4_15:
+BB5_16:
 	ld	(_mode), a
-	jq	BB4_1
-BB4_7:
-	ld	a, l
+	jq	BB5_1
+BB5_6:
+	ld	e, a
+	ld	hl, LJTI5_0
+	add	hl, de
+	add	hl, de
+	add	hl, de
+	ld	hl, (hl)
+	jp	(hl)
+BB5_17:
+	ld	hl, _buffer
+	push	hl
+	call	_strlen
+	push	hl
+	pop	iy
+	pop	hl
+	ld	(_ind), iy
+	lea	hl, iy + 0
+	ld	de, 39
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	jq	p, BB5_19
+	ld	(_cur), iy
+	ld	iy, 0
+	jq	BB5_20
+BB5_7:
+	ld	a, c
 	cp	a, 54
-	jq	nz, BB4_16
+	jq	nz, BB5_8
 	ld	a, (_mode)
 	cp	a, 1
 	ld	a, 1
-	jq	nz, BB4_10
+	jq	nz, BB5_11
 	ld	a, 0
-BB4_10:
+BB5_11:
 	and	a, 1
 	ld	(_mode), a
-	jq	BB4_1
-BB4_16:
+	jq	BB5_1
+BB5_8:
+	ld	a, c
+	cp	a, 56
+	jq	nz, BB5_29
+	call	_bs
+	jq	BB5_1
+BB5_29:
 	ld	de, 0
-	ld	e, l
-	ld	d, h
+	ld	e, c
+	ld	d, b
 	dec	de
 	ld	a, (_mode)
 	ld	l, a
@@ -402,8 +585,76 @@ BB4_16:
 	push	hl
 	call	_addstr
 	pop	hl
-	jq	BB4_1
+	jq	BB5_1
+BB5_21:
+	ld	hl, (_ind)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB5_23
+	ld	de, (_cur)
+	dec	de
+	ld	(_cur), de
+	dec	hl
+	ld	(_ind), hl
+BB5_23:
+	call	_equalize
+	jq	BB5_1
+BB5_24:
+	ld	hl, (_ind)
+	ld	(ix + -3), hl
+	ld	hl, _buffer
+	push	hl
+	call	_strlen
+	ld	bc, (ix + -3)
+	push	hl
+	pop	de
+	pop	hl
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jq	nc, BB5_26
+	ld	hl, (_cur)
+	inc	hl
+	ld	(_cur), hl
+	inc	bc
+	ld	(_ind), bc
+BB5_26:
+	call	_equalize
+	jq	BB5_1
+BB5_27:
+	or	a, a
+	sbc	hl, hl
+	ld	(_ind), hl
+	ld	(_cur), hl
+	ld	(_offset), hl
+	call	_equalize
+	jq	BB5_1
+BB5_19:
+	ld	hl, 40
+	ld	(_cur), hl
+	ld	de, -40
+	add	iy, de
+BB5_20:
+	ld	(_offset), iy
+	call	_equalize
+	jq	BB5_1
 	section	.text,"ax",@progbits
+	section	.rodata,"a",@progbits
+lJTI5_0:
+	private	LJTI5_0
+LJTI5_0:
+	dl	BB5_17
+	dl	BB5_21
+	dl	BB5_24
+	dl	BB5_27
+	dl	BB5_29
+	dl	BB5_29
+	dl	BB5_29
+	dl	BB5_29
+	dl	BB5_1
+	dl	BB5_1
 
 	section	.text,"ax",@progbits
 	public	_eval
@@ -1046,14 +1297,24 @@ _key_strings:
 	dl	0
 
 	section	.bss,"aw",@nobits
-	public	_ind
-_ind:
+	public	_offset
+_offset:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_cur
+_cur:
 	rb	3
 
 	section	.bss,"aw",@nobits
 	public	_buffer
 _buffer:
 	rb	1024
+
+	section	.bss,"aw",@nobits
+	public	_ind
+_ind:
+	rb	3
 
 	section	.rodata,"a",@progbits
 	private	L_.str.63
@@ -1082,33 +1343,34 @@ L_.str.65:
 
 	ident	"clang version 12.0.0 (https://github.com/jacobly0/llvm-project 170be88120e3aa88c20eea5615ba76b8f1d6c647)"
 	extern	_gfx_SetTextTransparentColor
+	extern	__Unwind_SjLj_Register
 	extern	_fontlib_SetTransparency
-	extern	__frameset
 	extern	_fontlib_GetFontByIndex
 	extern	_malloc
+	extern	_gfx_SetTextFGColor
+	extern	_gfx_Begin
+	extern	_gfx_PrintString
+	extern	__ishl
+	extern	_strlen
+	extern	__setflag
+	extern	_gfx_Blit
+	extern	_gfx_FillRectangle
+	extern	_fontlib_SetCursorPosition
+	extern	_os_GetCSC
+	extern	__frameset
 	extern	_fontlib_SetBackgroundColor
 	extern	_gfx_SetTextBGColor
-	extern	_gfx_SetTextFGColor
 	extern	_gfx_SetTransparentColor
-	extern	_gfx_Begin
 	extern	_fontlib_DrawString
 	extern	_fontlib_SetForegroundColor
 	extern	_fontlib_SetFont
-	extern	__Unwind_SjLj_Register
-	extern	_gfx_PrintString
-	extern	_strlen
 	extern	_gfx_SetDraw
-	extern	__setflag
 	extern	_gfx_FillScreen
+	extern	_gfx_VertLine
 	extern	__Unwind_SjLj_Unregister
-	extern	_gfx_Blit
-	extern	__irems
-	extern	_gfx_FillRectangle
 	extern	_strcpy
 	extern	__imulu
 	extern	_gfx_SetColor
 	extern	_gfx_Rectangle
-	extern	_fontlib_SetCursorPosition
-	extern	_os_GetCSC
 	extern	__frameset0
 	extern	_gfx_SetTextXY
