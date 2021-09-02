@@ -657,31 +657,6 @@ LJTI5_0:
 	dl	BB5_1
 
 	section	.text,"ax",@progbits
-	public	_eval
-_eval:
-	ld	hl, -3
-	call	__frameset
-	ld	hl, (ix + 6)
-	push	hl
-	call	_strlen
-	pop	de
-	push	hl
-	call	_malloc
-	ld	(ix + -3), hl
-	pop	de
-	push	hl
-	ld	hl, (ix + 6)
-	push	hl
-	call	_strcpy
-	pop	hl
-	pop	hl
-	ld	hl, (ix + -3)
-	ld	sp, ix
-	pop	ix
-	ret
-	section	.text,"ax",@progbits
-
-	section	.text,"ax",@progbits
 	public	_main
 _main:
 	ld	hl, L_.str.64
@@ -1346,7 +1321,6 @@ L_.str.65:
 	extern	__Unwind_SjLj_Register
 	extern	_fontlib_SetTransparency
 	extern	_fontlib_GetFontByIndex
-	extern	_malloc
 	extern	_gfx_SetTextFGColor
 	extern	_gfx_Begin
 	extern	_gfx_PrintString
@@ -1368,7 +1342,6 @@ L_.str.65:
 	extern	_gfx_FillScreen
 	extern	_gfx_VertLine
 	extern	__Unwind_SjLj_Unregister
-	extern	_strcpy
 	extern	__imulu
 	extern	_gfx_SetColor
 	extern	_gfx_Rectangle

@@ -25,6 +25,7 @@
 #include <keypadc.h>
 #include <fontlibc.h>
 //#include "tigcclib.h"
+#include "eval.h"
 
 fontlib_font_t *font_small;
 
