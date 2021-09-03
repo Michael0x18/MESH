@@ -37,6 +37,29 @@ const char *func_strings[] = { "   y=    Window   Zoom   trace   graph",
 	"   ??      ??      ??      ??      ?? " };
 int8_t mode;
 
+uint8_t checkKey(void) {
+    static uint8_t last_key;
+    uint8_t only_key = 0;
+    kb_Scan();
+    for (uint8_t key = 1, group = 7; group; --group) {
+        for (uint8_t mask = 1; mask; mask <<= 1, ++key) {
+            if (kb_Data[group] & mask) {
+                if (only_key) {
+                    last_key = 0;
+                    return 0;
+                } else {
+                    only_key = key;
+                }
+            }
+        }
+    }
+    if (only_key == last_key) {
+        return 0;
+    }
+    last_key = only_key;
+    return only_key;
+}
+
 /*
  * TODO do other key modes.
  */
@@ -49,7 +72,7 @@ const char *key_strings[56][4] = {
 	{"<ERR6>",},//6
 	{"<ERR7>",},//7
 	{"<ERR8>",},//8
-	{"\n",},//9
+	{"<NEWLINE>",},//9
 	{"+",},//10
 	{"-",},//11
 	{"*",},//12
@@ -244,7 +267,7 @@ void mesh_mainloop() {
 		draw_shell();
 		gfx_BlitBuffer();
 		while (!k)
-			k = os_GetCSC();
+			k = checkKey();
 		//Do modifiers and keypresses
 		switch (k) {
 			case 54://2nd
@@ -287,8 +310,6 @@ void mesh_mainloop() {
 				//5-8 unused
 			case 9://TODO ENTER -> SUBMIT
 				submit();
-				break;
-			case 10:
 				break;
 			case 56://Trap delete
 				bs();

@@ -1,6 +1,89 @@
 	section	.text,"ax",@progbits
 	assume	adl = 1
 	section	.text,"ax",@progbits
+	public	_checkKey
+_checkKey:
+	ld	hl, -3
+	call	__frameset
+	call	_kb_Scan
+	ld	hl, 7
+	ld	b, 0
+	ld	c, 1
+BB0_1:
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB0_9
+	ld	(ix + -3), hl
+	add	hl, hl
+	ex	de, hl
+	ld	iy, -720880
+	add	iy, de
+	ld	a, c
+	add	a, 8
+	ld	e, a
+	ld	h, 1
+BB0_3:
+	ld	a, h
+	or	a, a
+	jq	z, BB0_8
+	ld	l, e
+	ld	e, (iy)
+	ld	d, (iy + 1)
+	ld	a, e
+	and	a, h
+	or	a, a
+	jq	nz, BB0_5
+	ld	a, b
+	jq	BB0_6
+BB0_5:
+	ld	a, b
+	or	a, a
+	ld	a, c
+	jq	nz, BB0_7
+BB0_6:
+	sla	h
+	inc	c
+	ld	b, a
+	ld	e, l
+	jq	BB0_3
+BB0_8:
+	ld	hl, (ix + -3)
+	dec	hl
+	ld	c, e
+	jq	BB0_1
+BB0_9:
+	ld	a, (_checkKey.last_key)
+	ld	c, a
+	ld	e, 0
+BB0_10:
+	ld	a, b
+	cp	a, c
+	jq	nz, BB0_11
+	jq	BB0_13
+BB0_11:
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jq	nz, BB0_13
+	ld	a, b
+	ld	(_checkKey.last_key), a
+	ld	e, b
+BB0_13:
+	ld	a, e
+	pop	hl
+	pop	ix
+	ret
+BB0_7:
+	ld	e, 0
+	ld	a, e
+	ld	(_checkKey.last_key), a
+	ld	c, e
+	ld	hl, (ix + -3)
+	jq	BB0_10
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
 	public	_equalize
 _equalize:
 	ld	hl, -3
@@ -13,10 +96,10 @@ _equalize:
 	or	a, a
 	sbc	hl, de
 	call	__setflag
-	jq	p, BB0_2
+	jq	p, BB1_2
 	ld	(_offset), iy
 	lea	bc, iy + 0
-BB0_2:
+BB1_2:
 	ld	(ix + -3), bc
 	ld	bc, (_cur)
 	ld	de, 1
@@ -27,16 +110,16 @@ BB0_2:
 	call	__setflag
 	push	bc
 	pop	de
-	jq	p, BB0_4
+	jq	p, BB1_4
 	lea	de, iy + 0
-BB0_4:
+BB1_4:
 	ld	iy, _buffer
-BB0_5:
+BB1_5:
 	push	de
 	pop	hl
 	or	a, a
 	sbc	hl, bc
-	jq	z, BB0_6
+	jq	z, BB1_6
 	inc	bc
 	ld	(_cur), bc
 	ld	hl, (ix + -3)
@@ -47,16 +130,16 @@ BB0_5:
 	ld	(_offset), hl
 	ld	(ix + -3), iy
 	ld	iy, _buffer
-	jq	BB0_5
-BB0_6:
+	jq	BB1_5
+BB1_6:
 	ld	bc, 41
-BB0_8:
+BB1_8:
 	push	de
 	pop	hl
 	or	a, a
 	sbc	hl, bc
 	call	__setflag
-	jq	m, BB0_10
+	jq	m, BB1_10
 	push	de
 	pop	hl
 	dec	hl
@@ -71,8 +154,8 @@ BB0_8:
 	ld	(ix + -3), de
 	ex	de, hl
 	ld	bc, 41
-	jq	BB0_8
-BB0_10:
+	jq	BB1_8
+BB1_10:
 	push	iy
 	call	_strlen
 	push	hl
@@ -88,18 +171,18 @@ BB0_10:
 	ld	bc, 41
 	or	a, a
 	sbc	hl, bc
-	jq	c, BB0_13
+	jq	c, BB1_13
 	ld	bc, 40
 	ex	de, hl
 	or	a, a
 	sbc	hl, bc
-	jq	nc, BB0_13
+	jq	nc, BB1_13
 	ld	de, -40
 	add	iy, de
 	ld	(_offset), iy
 	ld	hl, 40
 	ld	(_cur), hl
-BB0_13:
+BB1_13:
 	pop	hl
 	pop	ix
 	ret
@@ -121,40 +204,40 @@ _addchar:
 	or	a, a
 	sbc	hl, de
 	call	__setflag
-	jq	p, BB1_7
+	jq	p, BB2_7
 	ld	a, (ix + 6)
 	ld	de, (_ind)
-BB1_2:
+BB2_2:
 	push	de
 	pop	hl
 	or	a, a
 	sbc	hl, bc
-	jq	z, BB1_4
+	jq	z, BB2_4
 	ld	iy, _buffer
 	add	iy, bc
 	dec	bc
 	ld	l, (iy + -1)
 	ld	(iy), l
-	jq	BB1_2
-BB1_4:
+	jq	BB2_2
+BB2_4:
 	push	de
 	pop	hl
 	ld	bc, 1024
 	or	a, a
 	sbc	hl, bc
 	call	__setflag
-	jq	p, BB1_6
+	jq	p, BB2_6
 	ld	hl, _buffer
 	add	hl, de
 	inc	de
 	ld	(_ind), de
 	ld	(hl), a
-BB1_6:
+BB2_6:
 	ld	hl, (_cur)
 	inc	hl
 	ld	(_cur), hl
 	call	_equalize
-BB1_7:
+BB2_7:
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
@@ -168,7 +251,7 @@ _bs:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jq	z, BB2_4
+	jq	z, BB3_4
 	ld	iy, _buffer
 	push	de
 	pop	bc
@@ -179,7 +262,7 @@ _bs:
 	ld	(_ind), bc
 	add	iy, de
 	ld	e, (iy)
-BB2_2:
+BB3_2:
 	push	hl
 	pop	iy
 	ld	(iy), e
@@ -187,13 +270,13 @@ BB2_2:
 	inc	hl
 	ld	a, e
 	or	a, a
-	jq	nz, BB2_2
+	jq	nz, BB3_2
 	ld	(iy + 1), 0
 	ld	hl, (_cur)
 	dec	hl
 	ld	(_cur), hl
 	call	_equalize
-BB2_4:
+BB3_4:
 	ret
 	section	.text,"ax",@progbits
 
@@ -205,7 +288,7 @@ _addstr:
 	or	a, a
 	sbc	hl, hl
 	ld	(ix + -3), hl
-BB3_1:
+BB4_1:
 	ld	hl, (ix + 6)
 	push	hl
 	call	_strlen
@@ -215,7 +298,7 @@ BB3_1:
 	ld	hl, (ix + -3)
 	or	a, a
 	sbc	hl, de
-	jq	nc, BB3_2
+	jq	nc, BB4_2
 	ld	hl, (ix + 6)
 	ld	de, (ix + -3)
 	add	hl, de
@@ -227,8 +310,8 @@ BB3_1:
 	ld	hl, (ix + -3)
 	inc	hl
 	ld	(ix + -3), hl
-	jq	BB3_1
-BB3_2:
+	jq	BB4_1
+BB4_2:
 	pop	hl
 	pop	ix
 	ret
@@ -484,7 +567,7 @@ _submit:
 	call	__frameset
 	ld	a, (_buffer)
 	or	a, a
-	jq	z, BB6_4
+	jq	z, BB7_4
 	ld	hl, -1
 	push	hl
 	call	_gfx_SetColor
@@ -552,9 +635,9 @@ _submit:
 	ex	de, hl
 	or	a, a
 	sbc	hl, bc
-	jq	c, BB6_3
+	jq	c, BB7_3
 	ld	iy, 0
-BB6_3:
+BB7_3:
 	ld	hl, -46
 	push	hl
 	push	iy
@@ -577,7 +660,7 @@ BB6_3:
 	pop	hl
 	pop	hl
 	pop	hl
-BB6_4:
+BB7_4:
 	pop	hl
 	pop	ix
 	ret
@@ -592,52 +675,52 @@ _mesh_mainloop:
 	push	hl
 	call	_gfx_SetDraw
 	pop	hl
-BB7_1:
+BB8_1:
 	call	_draw_shell
 	ld	hl, 1
 	push	hl
 	call	_gfx_Blit
 	pop	hl
 	ld.sis	bc, 0
-BB7_2:
+BB8_2:
 	ld	a, c
 	or	a, a
-	jq	nz, BB7_4
-	call	_os_GetCSC
+	jq	nz, BB8_4
+	call	_checkKey
 	ld	c, a
 	ld	b, 0
-	jq	BB7_2
-BB7_4:
+	jq	BB8_2
+BB8_4:
 	ld	a, c
 	sub	a, 1
 	ld	de, 0
-	cp	a, 10
-	jq	c, BB7_6
+	cp	a, 9
+	jq	c, BB8_6
 	ld	a, c
 	cp	a, 48
-	jq	nz, BB7_7
+	jq	nz, BB8_7
 	ld	a, (_mode)
 	cp	a, 3
 	ld	l, 0
-	jq	z, BB7_14
+	jq	z, BB8_14
 	ld	l, 2
-BB7_14:
+BB8_14:
 	cp	a, 2
 	ld	a, 3
-	jq	z, BB7_16
+	jq	z, BB8_16
 	ld	a, l
-BB7_16:
+BB8_16:
 	ld	(_mode), a
-	jq	BB7_1
-BB7_6:
+	jq	BB8_1
+BB8_6:
 	ld	e, a
-	ld	hl, LJTI7_0
+	ld	hl, LJTI8_0
 	add	hl, de
 	add	hl, de
 	add	hl, de
 	ld	hl, (hl)
 	jp	(hl)
-BB7_17:
+BB8_17:
 	ld	hl, _buffer
 	push	hl
 	call	_strlen
@@ -650,30 +733,30 @@ BB7_17:
 	or	a, a
 	sbc	hl, de
 	call	__setflag
-	jq	p, BB7_19
+	jq	p, BB8_19
 	ld	(_cur), iy
 	ld	iy, 0
-	jq	BB7_20
-BB7_7:
+	jq	BB8_20
+BB8_7:
 	ld	a, c
 	cp	a, 54
-	jq	nz, BB7_8
+	jq	nz, BB8_8
 	ld	a, (_mode)
 	cp	a, 1
 	ld	a, 1
-	jq	nz, BB7_11
+	jq	nz, BB8_11
 	ld	a, 0
-BB7_11:
+BB8_11:
 	and	a, 1
 	ld	(_mode), a
-	jq	BB7_1
-BB7_8:
+	jq	BB8_1
+BB8_8:
 	ld	a, c
 	cp	a, 56
-	jq	nz, BB7_30
+	jq	nz, BB8_30
 	call	_bs
-	jq	BB7_1
-BB7_30:
+	jq	BB8_1
+BB8_30:
 	ld	de, 0
 	ld	e, c
 	ld	d, b
@@ -701,22 +784,22 @@ BB7_30:
 	push	hl
 	call	_addstr
 	pop	hl
-	jq	BB7_1
-BB7_21:
+	jq	BB8_1
+BB8_21:
 	ld	hl, (_ind)
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jq	z, BB7_23
+	jq	z, BB8_23
 	ld	de, (_cur)
 	dec	de
 	ld	(_cur), de
 	dec	hl
 	ld	(_ind), hl
-BB7_23:
+BB8_23:
 	call	_equalize
-	jq	BB7_1
-BB7_24:
+	jq	BB8_1
+BB8_24:
 	ld	hl, (_ind)
 	ld	(ix + -3), hl
 	ld	hl, _buffer
@@ -730,50 +813,49 @@ BB7_24:
 	pop	hl
 	or	a, a
 	sbc	hl, de
-	jq	nc, BB7_26
+	jq	nc, BB8_26
 	ld	hl, (_cur)
 	inc	hl
 	ld	(_cur), hl
 	inc	bc
 	ld	(_ind), bc
-BB7_26:
+BB8_26:
 	call	_equalize
-	jq	BB7_1
-BB7_27:
+	jq	BB8_1
+BB8_27:
 	or	a, a
 	sbc	hl, hl
 	ld	(_ind), hl
 	ld	(_cur), hl
 	ld	(_offset), hl
 	call	_equalize
-	jq	BB7_1
-BB7_28:
+	jq	BB8_1
+BB8_28:
 	call	_submit
-	jq	BB7_1
-BB7_19:
+	jq	BB8_1
+BB8_19:
 	ld	hl, 40
 	ld	(_cur), hl
 	ld	de, -40
 	add	iy, de
-BB7_20:
+BB8_20:
 	ld	(_offset), iy
 	call	_equalize
-	jq	BB7_1
+	jq	BB8_1
 	section	.text,"ax",@progbits
 	section	.rodata,"a",@progbits
-lJTI7_0:
-	private	LJTI7_0
-LJTI7_0:
-	dl	BB7_17
-	dl	BB7_21
-	dl	BB7_24
-	dl	BB7_27
-	dl	BB7_30
-	dl	BB7_30
-	dl	BB7_30
-	dl	BB7_30
-	dl	BB7_28
-	dl	BB7_1
+lJTI8_0:
+	private	LJTI8_0
+LJTI8_0:
+	dl	BB8_17
+	dl	BB8_21
+	dl	BB8_24
+	dl	BB8_27
+	dl	BB8_30
+	dl	BB8_30
+	dl	BB8_30
+	dl	BB8_30
+	dl	BB8_28
 
 	section	.text,"ax",@progbits
 	public	_main
@@ -896,6 +978,11 @@ _func_strings:
 	dl	L_.str.6
 	dl	L_.str.6
 
+	section	.bss,"aw",@nobits
+	private	_checkKey.last_key
+_checkKey.last_key:
+	rb	1
+
 	section	.rodata,"a",@progbits
 	private	L_.str.7
 L_.str.7:
@@ -939,7 +1026,7 @@ L_.str.14:
 	section	.rodata,"a",@progbits
 	private	L_.str.15
 L_.str.15:
-	db	"",012o,000o
+	db	"<NEWLINE>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.16
@@ -1464,7 +1551,6 @@ L_.str.65:
 	extern	_gfx_Blit
 	extern	_gfx_SetClipRegion
 	extern	_fontlib_SetCursorPosition
-	extern	_os_GetCSC
 	extern	_eval
 	extern	_memset
 	extern	__frameset
@@ -1472,6 +1558,7 @@ L_.str.65:
 	extern	_gfx_SetTextBGColor
 	extern	_gfx_SetTransparentColor
 	extern	_gfx_FillRectangle_NoClip
+	extern	_kb_Scan
 	extern	_fontlib_DrawString
 	extern	_fontlib_SetForegroundColor
 	extern	_fontlib_SetFont
