@@ -493,7 +493,7 @@ _draw_shell:
 	call	_fontlib_SetCursorPosition
 	pop	hl
 	pop	hl
-	ld	hl, L_.str.63
+	ld	hl, L_.str.62
 	push	hl
 	call	_fontlib_DrawString
 	pop	hl
@@ -876,7 +876,7 @@ _main:
 	pop	hl
 	ld	hl, 3
 	push	hl
-	ld	hl, L_.str.64
+	ld	hl, L_.str.63
 	push	hl
 	call	_fontlib_GetFontByIndex
 	pop	de
@@ -920,7 +920,7 @@ _main:
 	call	_gfx_SetTextXY
 	pop	hl
 	pop	hl
-	ld	hl, L_.str.65
+	ld	hl, L_.str.64
 	push	hl
 	call	_gfx_PrintString
 	pop	hl
@@ -1066,201 +1066,196 @@ L_.str.22:
 	section	.rodata,"a",@progbits
 	private	L_.str.23
 L_.str.23:
-	db	"~",000o
+	db	"3",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.24
 L_.str.24:
-	db	"3",000o
+	db	"6",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.25
 L_.str.25:
-	db	"6",000o
+	db	"9",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.26
 L_.str.26:
-	db	"9",000o
+	db	")",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.27
 L_.str.27:
-	db	")",000o
+	db	"tan(",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.28
 L_.str.28:
-	db	"tan(",000o
+	db	"<VARS>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.29
 L_.str.29:
-	db	"<VARS>",000o
+	db	"<ERR24>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.30
 L_.str.30:
-	db	"<ERR24>",000o
+	db	".",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.31
 L_.str.31:
-	db	".",000o
+	db	"2",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.32
 L_.str.32:
-	db	"2",000o
+	db	"5",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.33
 L_.str.33:
-	db	"5",000o
+	db	"8",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.34
 L_.str.34:
-	db	"8",000o
+	db	"(",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.35
 L_.str.35:
-	db	"(",000o
+	db	"<cos(>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.36
 L_.str.36:
-	db	"<cos(>",000o
+	db	"<PRGM>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.37
 L_.str.37:
-	db	"<PRGM>",000o
+	db	"<STAT>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.38
 L_.str.38:
-	db	"<STAT>",000o
+	db	"0",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.39
 L_.str.39:
-	db	"0",000o
+	db	"1",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.40
 L_.str.40:
-	db	"1",000o
+	db	"4",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.41
 L_.str.41:
-	db	"4",000o
+	db	"7",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.42
 L_.str.42:
-	db	"7",000o
+	db	",",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.43
 L_.str.43:
-	db	",",000o
+	db	"sin(",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.44
 L_.str.44:
-	db	"sin(",000o
+	db	"<APPS>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.45
 L_.str.45:
-	db	"<APPS>",000o
+	db	"X",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.46
 L_.str.46:
-	db	"X",000o
+	db	"<ON>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.47
 L_.str.47:
-	db	"<ON>",000o
+	db	"->",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.48
 L_.str.48:
-	db	"->",000o
+	db	"ln(",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.49
 L_.str.49:
-	db	"ln(",000o
+	db	"log(",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.50
 L_.str.50:
-	db	"log(",000o
+	db	"^2",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.51
 L_.str.51:
-	db	"^2",000o
+	db	"^~1",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.52
 L_.str.52:
-	db	"^~1",000o
+	db	"<MATH>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.53
 L_.str.53:
-	db	"<MATH>",000o
+	db	"<ALPHA>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.54
 L_.str.54:
-	db	"<ALPHA>",000o
+	db	"<GRAPH>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.55
 L_.str.55:
-	db	"<GRAPH>",000o
+	db	"<TRACE>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.56
 L_.str.56:
-	db	"<TRACE>",000o
+	db	"<ZOOM>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.57
 L_.str.57:
-	db	"<ZOOM>",000o
+	db	"<WINDOW>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.58
 L_.str.58:
-	db	"<WINDOW>",000o
+	db	"<Y=>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.59
 L_.str.59:
-	db	"<Y=>",000o
+	db	"<SECOND>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.60
 L_.str.60:
-	db	"<SECOND>",000o
+	db	"<MODE>",000o
 
 	section	.rodata,"a",@progbits
 	private	L_.str.61
 L_.str.61:
-	db	"<MODE>",000o
-
-	section	.rodata,"a",@progbits
-	private	L_.str.62
-L_.str.62:
 	db	"<DEL>",000o
 
 	section	.data,"aw",@progbits
@@ -1327,6 +1322,10 @@ _key_strings:
 	dl	0
 	dl	0
 	dl	L_.str.22
+	dl	0
+	dl	0
+	dl	0
+	dl	L_.str.17
 	dl	0
 	dl	0
 	dl	0
@@ -1486,10 +1485,6 @@ _key_strings:
 	dl	0
 	dl	0
 	dl	0
-	dl	L_.str.62
-	dl	0
-	dl	0
-	dl	0
 
 	section	.bss,"aw",@nobits
 	public	_offset
@@ -1512,8 +1507,8 @@ _ind:
 	rb	3
 
 	section	.rodata,"a",@progbits
-	private	L_.str.63
-L_.str.63:
+	private	L_.str.62
+L_.str.62:
 	db	"MESH V0.00",000o
 
 	section	.bss,"aw",@nobits
@@ -1522,8 +1517,8 @@ _mode:
 	rb	1
 
 	section	.rodata,"a",@progbits
-	private	L_.str.64
-L_.str.64:
+	private	L_.str.63
+L_.str.63:
 	db	"DrMono",000o
 
 	section	.bss,"aw",@nobits
@@ -1532,8 +1527,8 @@ _font_small:
 	rb	3
 
 	section	.rodata,"a",@progbits
-	private	L_.str.65
-L_.str.65:
+	private	L_.str.64
+L_.str.64:
 	db	"Loading...",000o
 
 	ident	"clang version 12.0.0 (https://github.com/jacobly0/llvm-project 170be88120e3aa88c20eea5615ba76b8f1d6c647)"
