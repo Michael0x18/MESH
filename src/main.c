@@ -230,7 +230,7 @@ void submit(void){
 	gfx_SetColor(255);
 	gfx_FillRectangle_NoClip(0,210,320,15);
 	fontlib_SetForegroundColor(120);
-	fontlib_SetCursorPosition(strlen(res)<40?240-8*strlen(res):0,210);
+	fontlib_SetCursorPosition(strlen(res)<40?320-8*strlen(res):0,210);
 	fontlib_DrawString(res);
 	scroll_history();
 	memset(buffer,0,1024);

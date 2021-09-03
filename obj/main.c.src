@@ -546,7 +546,7 @@ _submit:
 	call	__imulu
 	push	hl
 	pop	iy
-	ld	bc, 240
+	ld	bc, 320
 	add	iy, bc
 	ld	bc, 40
 	ex	de, hl
