@@ -245,12 +245,12 @@ _draw_shell:
 	push	hl
 	ld	hl, 320
 	push	hl
-	ld	hl, 210
+	ld	hl, -46
 	push	hl
 	or	a, a
 	sbc	hl, hl
 	push	hl
-	call	_gfx_FillRectangle
+	call	_gfx_FillRectangle_NoClip
 	pop	hl
 	pop	hl
 	pop	hl
@@ -279,10 +279,10 @@ _draw_shell:
 	call	__ishl
 	ld	de, 14
 	push	de
-	ld	de, 210
+	ld	de, -46
 	push	de
 	push	hl
-	call	_gfx_VertLine
+	call	_gfx_VertLine_NoClip
 	pop	hl
 	pop	hl
 	pop	hl
@@ -306,7 +306,7 @@ _draw_shell:
 	sbc	hl, hl
 	push	hl
 	push	hl
-	call	_gfx_FillRectangle
+	call	_gfx_FillRectangle_NoClip
 	pop	hl
 	pop	hl
 	pop	hl
@@ -319,12 +319,12 @@ _draw_shell:
 	push	hl
 	ld	hl, 320
 	push	hl
-	ld	hl, 225
+	ld	hl, -31
 	push	hl
 	or	a, a
 	sbc	hl, hl
 	push	hl
-	call	_gfx_FillRectangle
+	call	_gfx_FillRectangle_NoClip
 	pop	hl
 	pop	hl
 	pop	hl
@@ -337,24 +337,12 @@ _draw_shell:
 	push	hl
 	ld	hl, 64
 	push	hl
-	ld	hl, 225
+	ld	hl, -31
 	push	hl
 	or	a, a
 	sbc	hl, hl
 	push	hl
-	call	_gfx_Rectangle
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	hl, 15
-	push	hl
-	ld	de, 64
-	push	de
-	ld	hl, 225
-	push	hl
-	push	de
-	call	_gfx_Rectangle
+	call	_gfx_Rectangle_NoClip
 	pop	hl
 	pop	hl
 	pop	hl
@@ -363,11 +351,23 @@ _draw_shell:
 	push	hl
 	ld	hl, 64
 	push	hl
-	ld	hl, 225
+	ld	de, -31
+	push	de
+	push	hl
+	call	_gfx_Rectangle_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 15
+	push	hl
+	ld	hl, 64
+	push	hl
+	ld	hl, -31
 	push	hl
 	ld	hl, 128
 	push	hl
-	call	_gfx_Rectangle
+	call	_gfx_Rectangle_NoClip
 	pop	hl
 	pop	hl
 	pop	hl
@@ -376,11 +376,11 @@ _draw_shell:
 	push	hl
 	ld	hl, 64
 	push	hl
-	ld	hl, 225
+	ld	hl, -31
 	push	hl
 	ld	hl, 192
 	push	hl
-	call	_gfx_Rectangle
+	call	_gfx_Rectangle_NoClip
 	pop	hl
 	pop	hl
 	pop	hl
@@ -389,11 +389,11 @@ _draw_shell:
 	push	hl
 	ld	hl, 64
 	push	hl
-	ld	hl, 225
+	ld	hl, -31
 	push	hl
 	ld	hl, 256
 	push	hl
-	call	_gfx_Rectangle
+	call	_gfx_Rectangle_NoClip
 	pop	hl
 	pop	hl
 	pop	hl
@@ -468,6 +468,122 @@ _draw_shell:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
+	public	_scroll_history
+_scroll_history:
+	ld	hl, 14
+	push	hl
+	call	_gfx_ShiftUp
+	pop	hl
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_submit
+_submit:
+	ld	hl, -3
+	call	__frameset
+	ld	a, (_buffer)
+	or	a, a
+	jq	z, BB6_4
+	ld	hl, -1
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, (_cur)
+	ld	c, 3
+	call	__ishl
+	ld	de, 14
+	push	de
+	ld	de, -46
+	push	de
+	push	hl
+	call	_gfx_VertLine_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_scroll_history
+	or	a, a
+	sbc	hl, hl
+	ld	(_cur), hl
+	ld	(_offset), hl
+	ld	(_ind), hl
+	ld	hl, _buffer
+	push	hl
+	call	_eval
+	ld	(ix + -3), hl
+	pop	hl
+	ld	hl, -1
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 15
+	push	hl
+	ld	hl, 320
+	push	hl
+	ld	hl, -46
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_FillRectangle_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 120
+	push	hl
+	call	_fontlib_SetForegroundColor
+	pop	hl
+	ld	hl, (ix + -3)
+	push	hl
+	call	_strlen
+	push	hl
+	pop	de
+	pop	hl
+	push	de
+	pop	hl
+	ld	bc, -8
+	call	__imulu
+	push	hl
+	pop	iy
+	ld	bc, 240
+	add	iy, bc
+	ld	bc, 40
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	jq	c, BB6_3
+	ld	iy, 0
+BB6_3:
+	ld	hl, -46
+	push	hl
+	push	iy
+	call	_fontlib_SetCursorPosition
+	pop	hl
+	pop	hl
+	ld	hl, (ix + -3)
+	push	hl
+	call	_fontlib_DrawString
+	pop	hl
+	call	_scroll_history
+	ld	hl, 1024
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, _buffer
+	push	hl
+	call	_memset
+	pop	hl
+	pop	hl
+	pop	hl
+BB6_4:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
 	public	_mesh_mainloop
 _mesh_mainloop:
 	ld	hl, -3
@@ -476,52 +592,52 @@ _mesh_mainloop:
 	push	hl
 	call	_gfx_SetDraw
 	pop	hl
-BB5_1:
+BB7_1:
 	call	_draw_shell
 	ld	hl, 1
 	push	hl
 	call	_gfx_Blit
 	pop	hl
 	ld.sis	bc, 0
-BB5_2:
+BB7_2:
 	ld	a, c
 	or	a, a
-	jq	nz, BB5_4
+	jq	nz, BB7_4
 	call	_os_GetCSC
 	ld	c, a
 	ld	b, 0
-	jq	BB5_2
-BB5_4:
+	jq	BB7_2
+BB7_4:
 	ld	a, c
 	sub	a, 1
 	ld	de, 0
 	cp	a, 10
-	jq	c, BB5_6
+	jq	c, BB7_6
 	ld	a, c
 	cp	a, 48
-	jq	nz, BB5_7
+	jq	nz, BB7_7
 	ld	a, (_mode)
 	cp	a, 3
 	ld	l, 0
-	jq	z, BB5_14
+	jq	z, BB7_14
 	ld	l, 2
-BB5_14:
+BB7_14:
 	cp	a, 2
 	ld	a, 3
-	jq	z, BB5_16
+	jq	z, BB7_16
 	ld	a, l
-BB5_16:
+BB7_16:
 	ld	(_mode), a
-	jq	BB5_1
-BB5_6:
+	jq	BB7_1
+BB7_6:
 	ld	e, a
-	ld	hl, LJTI5_0
+	ld	hl, LJTI7_0
 	add	hl, de
 	add	hl, de
 	add	hl, de
 	ld	hl, (hl)
 	jp	(hl)
-BB5_17:
+BB7_17:
 	ld	hl, _buffer
 	push	hl
 	call	_strlen
@@ -534,30 +650,30 @@ BB5_17:
 	or	a, a
 	sbc	hl, de
 	call	__setflag
-	jq	p, BB5_19
+	jq	p, BB7_19
 	ld	(_cur), iy
 	ld	iy, 0
-	jq	BB5_20
-BB5_7:
+	jq	BB7_20
+BB7_7:
 	ld	a, c
 	cp	a, 54
-	jq	nz, BB5_8
+	jq	nz, BB7_8
 	ld	a, (_mode)
 	cp	a, 1
 	ld	a, 1
-	jq	nz, BB5_11
+	jq	nz, BB7_11
 	ld	a, 0
-BB5_11:
+BB7_11:
 	and	a, 1
 	ld	(_mode), a
-	jq	BB5_1
-BB5_8:
+	jq	BB7_1
+BB7_8:
 	ld	a, c
 	cp	a, 56
-	jq	nz, BB5_29
+	jq	nz, BB7_30
 	call	_bs
-	jq	BB5_1
-BB5_29:
+	jq	BB7_1
+BB7_30:
 	ld	de, 0
 	ld	e, c
 	ld	d, b
@@ -585,22 +701,22 @@ BB5_29:
 	push	hl
 	call	_addstr
 	pop	hl
-	jq	BB5_1
-BB5_21:
+	jq	BB7_1
+BB7_21:
 	ld	hl, (_ind)
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jq	z, BB5_23
+	jq	z, BB7_23
 	ld	de, (_cur)
 	dec	de
 	ld	(_cur), de
 	dec	hl
 	ld	(_ind), hl
-BB5_23:
+BB7_23:
 	call	_equalize
-	jq	BB5_1
-BB5_24:
+	jq	BB7_1
+BB7_24:
 	ld	hl, (_ind)
 	ld	(ix + -3), hl
 	ld	hl, _buffer
@@ -614,54 +730,71 @@ BB5_24:
 	pop	hl
 	or	a, a
 	sbc	hl, de
-	jq	nc, BB5_26
+	jq	nc, BB7_26
 	ld	hl, (_cur)
 	inc	hl
 	ld	(_cur), hl
 	inc	bc
 	ld	(_ind), bc
-BB5_26:
+BB7_26:
 	call	_equalize
-	jq	BB5_1
-BB5_27:
+	jq	BB7_1
+BB7_27:
 	or	a, a
 	sbc	hl, hl
 	ld	(_ind), hl
 	ld	(_cur), hl
 	ld	(_offset), hl
 	call	_equalize
-	jq	BB5_1
-BB5_19:
+	jq	BB7_1
+BB7_28:
+	call	_submit
+	jq	BB7_1
+BB7_19:
 	ld	hl, 40
 	ld	(_cur), hl
 	ld	de, -40
 	add	iy, de
-BB5_20:
+BB7_20:
 	ld	(_offset), iy
 	call	_equalize
-	jq	BB5_1
+	jq	BB7_1
 	section	.text,"ax",@progbits
 	section	.rodata,"a",@progbits
-lJTI5_0:
-	private	LJTI5_0
-LJTI5_0:
-	dl	BB5_17
-	dl	BB5_21
-	dl	BB5_24
-	dl	BB5_27
-	dl	BB5_29
-	dl	BB5_29
-	dl	BB5_29
-	dl	BB5_29
-	dl	BB5_1
-	dl	BB5_1
+lJTI7_0:
+	private	LJTI7_0
+LJTI7_0:
+	dl	BB7_17
+	dl	BB7_21
+	dl	BB7_24
+	dl	BB7_27
+	dl	BB7_30
+	dl	BB7_30
+	dl	BB7_30
+	dl	BB7_30
+	dl	BB7_28
+	dl	BB7_1
 
 	section	.text,"ax",@progbits
 	public	_main
 _main:
-	ld	hl, L_.str.64
-	ld	de, 3
+	or	a, a
+	sbc	hl, hl
+	ld	iy, 30
+	ld	de, 320
+	ld	bc, 225
+	push	bc
 	push	de
+	push	iy
+	push	hl
+	call	_gfx_SetClipRegion
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 3
+	push	hl
+	ld	hl, L_.str.64
 	push	hl
 	call	_fontlib_GetFontByIndex
 	pop	de
@@ -1321,6 +1454,7 @@ L_.str.65:
 	extern	__Unwind_SjLj_Register
 	extern	_fontlib_SetTransparency
 	extern	_fontlib_GetFontByIndex
+	extern	_gfx_Rectangle_NoClip
 	extern	_gfx_SetTextFGColor
 	extern	_gfx_Begin
 	extern	_gfx_PrintString
@@ -1328,22 +1462,25 @@ L_.str.65:
 	extern	_strlen
 	extern	__setflag
 	extern	_gfx_Blit
-	extern	_gfx_FillRectangle
+	extern	_gfx_SetClipRegion
 	extern	_fontlib_SetCursorPosition
 	extern	_os_GetCSC
+	extern	_eval
+	extern	_memset
 	extern	__frameset
 	extern	_fontlib_SetBackgroundColor
 	extern	_gfx_SetTextBGColor
 	extern	_gfx_SetTransparentColor
+	extern	_gfx_FillRectangle_NoClip
 	extern	_fontlib_DrawString
 	extern	_fontlib_SetForegroundColor
 	extern	_fontlib_SetFont
+	extern	_gfx_VertLine_NoClip
 	extern	_gfx_SetDraw
 	extern	_gfx_FillScreen
-	extern	_gfx_VertLine
 	extern	__Unwind_SjLj_Unregister
+	extern	_gfx_ShiftUp
 	extern	__imulu
 	extern	_gfx_SetColor
-	extern	_gfx_Rectangle
 	extern	__frameset0
 	extern	_gfx_SetTextXY

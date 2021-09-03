@@ -17,7 +17,7 @@
  */
 char* eval(char* s1){
 	char* s2 = malloc(strlen(s1)*sizeof(char));
-	strcpy(s1,s2);
+	strcpy(s2,s1);
 
 	return s2;
 }

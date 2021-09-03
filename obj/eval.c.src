@@ -11,11 +11,13 @@ _eval:
 	pop	de
 	push	hl
 	call	_malloc
-	ld	(ix + -3), hl
-	pop	de
 	push	hl
+	pop	de
+	ld	(ix + -3), de
+	pop	hl
 	ld	hl, (ix + 6)
 	push	hl
+	push	de
 	call	_strcpy
 	pop	hl
 	pop	hl

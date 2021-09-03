@@ -37,6 +37,9 @@ const char *func_strings[] = { "   y=    Window   Zoom   trace   graph",
 	"   ??      ??      ??      ??      ?? " };
 int8_t mode;
 
+/*
+ * TODO do other key modes.
+ */
 const char *key_strings[56][4] = {
 	{"<DOWN>",},//1
 	{"<LEFT>",},//2
@@ -165,7 +168,7 @@ void addstr(char* s){
  */
 void draw_shell() {
 	gfx_SetColor(255);
-	gfx_FillRectangle(0,210,320,15);
+	gfx_FillRectangle_NoClip(0,210,320,15);
 	//fontlib_SetCursorPosition(0,210-14*(((signed int)strlen(buffer))/40));//Ditching wrapping
 	fontlib_SetCursorPosition(0,210);
 	gfx_SetColor(0);
@@ -178,21 +181,21 @@ void draw_shell() {
 	//}gfx_SetColor(0);
 	
 	fontlib_DrawString(buffer+offset);
-	gfx_VertLine(8*cur,210,14);
+	gfx_VertLine_NoClip(8*cur,210,14);
 
 	gfx_SetColor(43);
 	gfx_SetTextFGColor(255);
 	gfx_SetTextBGColor(1);
-	gfx_FillRectangle(0, 0, 320, 30);
+	gfx_FillRectangle_NoClip(0, 0, 320, 30);
 	//gfx_HorizLine(0,210,320);
 	gfx_SetColor(255);
-	gfx_FillRectangle(0, 225, 320, 15);
+	gfx_FillRectangle_NoClip(0, 225, 320, 15);
 	gfx_SetColor(43);
-	gfx_Rectangle(0, 225, 64, 15);
-	gfx_Rectangle(64, 225, 64, 15);
-	gfx_Rectangle(128, 225, 64, 15);
-	gfx_Rectangle(192, 225, 64, 15);
-	gfx_Rectangle(256, 225, 64, 15);
+	gfx_Rectangle_NoClip(0, 225, 64, 15);
+	gfx_Rectangle_NoClip(64, 225, 64, 15);
+	gfx_Rectangle_NoClip(128, 225, 64, 15);
+	gfx_Rectangle_NoClip(192, 225, 64, 15);
+	gfx_Rectangle_NoClip(256, 225, 64, 15);
 
 	//gfx_SetTextXY(2,2);
 	fontlib_SetForegroundColor(255);
@@ -203,6 +206,34 @@ void draw_shell() {
 	fontlib_SetForegroundColor(0);
 	fontlib_SetCursorPosition(0, 225);
 	fontlib_DrawString(func_strings[mode]);
+}
+
+void scroll_history(void){
+	//if(!gfx_vbuffer)exit(1);
+	//memmove(gfx_vbuffer+320*30,gfx_vbuffer+320*15,320*195);
+	//delay(1000);
+	//while(!os_GetCSC);
+	gfx_ShiftUp(14);
+}
+
+
+void submit(void){
+	if(!strlen(buffer))return;
+	gfx_SetColor(255);
+	gfx_VertLine_NoClip(8*cur,210,14);
+	scroll_history();
+	cur=0;
+	offset=0;
+	ind=0;
+	char *res = eval(buffer);
+	//memset(buffer,0,1024);
+	gfx_SetColor(255);
+	gfx_FillRectangle_NoClip(0,210,320,15);
+	fontlib_SetForegroundColor(120);
+	fontlib_SetCursorPosition(strlen(res)<40?240-8*strlen(res):0,210);
+	fontlib_DrawString(res);
+	scroll_history();
+	memset(buffer,0,1024);
 }
 
 void mesh_mainloop() {
@@ -255,6 +286,7 @@ void mesh_mainloop() {
 				break;
 				//5-8 unused
 			case 9://TODO ENTER -> SUBMIT
+				submit();
 				break;
 			case 10:
 				break;
@@ -271,6 +303,7 @@ void mesh_mainloop() {
 
 
 int main(void) {
+	gfx_SetClipRegion(0,30,320,225);
 	font_small = fontlib_GetFontByIndex("DrMono", 3);
 	fontlib_SetFont(font_small, 0);
 	fontlib_SetForegroundColor(255);
