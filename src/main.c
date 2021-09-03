@@ -223,7 +223,7 @@ void draw_shell() {
 	//gfx_SetTextXY(2,2);
 	fontlib_SetForegroundColor(255);
 	fontlib_SetCursorPosition(2, 0);
-	fontlib_DrawString("MESH V0.00");
+	fontlib_DrawString("MESH V0.01 -- EXPR version");
 	fontlib_SetCursorPosition(2, 15);
 	fontlib_DrawString(mods[mode]);
 	fontlib_SetForegroundColor(0);

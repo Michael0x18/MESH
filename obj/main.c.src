@@ -1509,7 +1509,7 @@ _ind:
 	section	.rodata,"a",@progbits
 	private	L_.str.62
 L_.str.62:
-	db	"MESH V0.00",000o
+	db	"MESH V0.01 -- EXPR version",000o
 
 	section	.bss,"aw",@nobits
 	public	_mode
