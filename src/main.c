@@ -24,10 +24,10 @@
 #include <graphx.h>
 #include <keypadc.h>
 #include <fontlibc.h>
-//#include "tigcclib.h"
-#include "eval.h"
 
-fontlib_font_t *font_small;
+#include "mesh.h"
+
+#include "eval.h"
 
 const char *mods[] = { "      ", "2nd   ", "ALPHA ", "alpha " };
 
@@ -324,6 +324,7 @@ void mesh_mainloop() {
 
 
 int main(void) {
+	fontlib_font_t *font_small;
 	gfx_SetClipRegion(0,30,320,225);
 	font_small = fontlib_GetFontByIndex("DrMono", 3);
 	fontlib_SetFont(font_small, 0);

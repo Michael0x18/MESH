@@ -1,3 +1,7 @@
+/*
+ * eval.h is a shim to the evaluation routines in eval.c
+ */
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
