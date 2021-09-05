@@ -20,4 +20,15 @@
 #include <keypadc.h>
 #include <fontlibc.h>
 
+uint8_t checkKey(void);
+void equalize();
+void addchar(char c);
+void bs(void);
+void addstr(char* s);
+void draw_shell();
+void scroll_history(void);
+void submit(void);
+void mesh_mainloop();
+int main(void);
+
 #endif /*MESH_H*/

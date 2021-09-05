@@ -35,6 +35,7 @@ const char *func_strings[] = { "   y=    Window   Zoom   trace   graph",
 	"   F1      F2      F3      F4      F5 ",
 	"   ??      ??      ??      ??      ?? ",
 	"   ??      ??      ??      ??      ?? " };
+
 int8_t mode;
 
 uint8_t checkKey(void) {
